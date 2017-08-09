@@ -42,6 +42,7 @@ import org.zendesk.client.v2.model.Status;
 import org.zendesk.client.v2.model.SuspendedTicket;
 import org.zendesk.client.v2.model.Ticket;
 import org.zendesk.client.v2.model.TicketForm;
+import org.zendesk.client.v2.model.TicketImport;
 import org.zendesk.client.v2.model.TicketResult;
 import org.zendesk.client.v2.model.Topic;
 import org.zendesk.client.v2.model.Trigger;
@@ -224,23 +225,23 @@ public class Zendesk implements Closeable {
                 "ticket_forms")));
     }
 
-    public Ticket importTicket(Ticket ticket) {
+    public Ticket importTicket(TicketImport ticketImport) {
         return complete(submit(req("POST", cnst("/imports/tickets.json"),
-                JSON, json(Collections.singletonMap("ticket", ticket))),
+                JSON, json(Collections.singletonMap("ticket", ticketImport))),
                 handle(Ticket.class, "ticket")));
     }
 
-    public JobStatus<Ticket> importTickets(Ticket... tickets) {
-        return importTickets(Arrays.asList(tickets));
+    public JobStatus<Ticket> importTickets(TicketImport... ticketImports) {
+        return importTickets(Arrays.asList(ticketImports));
     }
 
-    public JobStatus<Ticket> importTickets(List<Ticket> tickets) {
-        return complete(importTicketsAsync(tickets));
+    public JobStatus<Ticket> importTickets(List<TicketImport> ticketImports) {
+        return complete(importTicketsAsync(ticketImports));
     }
 
-    public ListenableFuture<JobStatus<Ticket>> importTicketsAsync(List<Ticket> tickets) {
+    public ListenableFuture<JobStatus<Ticket>> importTicketsAsync(List<TicketImport> ticketImports) {
         return submit(req("POST", cnst("/imports/tickets/create_many.json"), JSON, json(
-                Collections.singletonMap("tickets", tickets))), handleJobStatus(Ticket.class));
+                Collections.singletonMap("tickets", ticketImports))), handleJobStatus(Ticket.class));
     }
 
     public Ticket getTicket(long id) {
